@@ -3,6 +3,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import Image from "next/image"
 import { submitStep1 } from "@/lib/actions"
+import Script from 'next/script';
 
 export default function LeadCaptureStep1() {
   return (
@@ -55,6 +56,9 @@ export default function LeadCaptureStep1() {
                       className="mt-1 bg-white border-gray-300"
                     />
                   </div>
+
+                  {/* Hidden input for TrustedForm */}
+                  <input type="hidden" id="xxTrustedFormCertUrl" name="xxTrustedFormCertUrl" />
 
                   <Button
                     type="submit"
@@ -121,6 +125,29 @@ export default function LeadCaptureStep1() {
           </div>
         </div>
       </div>
+      {/* TrustedForm Script */}
+      <Script id="trustedform-script-step1" strategy="afterInteractive">
+        {`
+          (function() {
+            var tf = document.createElement('script');
+            tf.type = 'text/javascript';
+            tf.async = true;
+            tf.src = ("https:" == document.location.protocol ? 'https' : 'http') +
+              '://api.trustedform.com/trustedform.js?field=xxTrustedFormCertUrl&l=' +
+              new Date().getTime() + Math.random();
+            var s = document.getElementsByTagName('script')[0]; 
+            if (s && s.parentNode) {
+              s.parentNode.insertBefore(tf, s);
+            } else {
+              // Fallback if no script tag is found
+              document.head.appendChild(tf);
+            }
+          })();
+        `}
+      </Script>
+      <noscript>
+        <img src='https://api.trustedform.com/ns.gif' />
+      </noscript>
     </div>
   )
 }
