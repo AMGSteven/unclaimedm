@@ -12,6 +12,7 @@ const DEBUG = true;
  * Loads the TrustedForm script if it hasn't been loaded yet
  * This function ensures the script is only loaded once per page
  */
+
 export function loadTrustedFormScript(): void {
   // If the script is already loaded, don't load it again
   if (trustedFormLoaded) {
@@ -99,6 +100,7 @@ export function loadTrustedFormScript(): void {
  * Creates the hidden input field for TrustedForm
  * This should be called in each form where TrustedForm is needed
  */
+
 export function createTrustedFormField(): HTMLInputElement {
   const input = document.createElement('input');
   input.type = 'hidden';

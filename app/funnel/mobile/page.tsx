@@ -33,7 +33,7 @@ export default function MobileCapturePage() {
     setPhoneError("")
     return true
   }
-
+  
   const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const input = e.target.value
     // Format the phone number as the user types
