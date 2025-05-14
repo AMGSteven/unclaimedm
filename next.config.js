@@ -2,7 +2,6 @@
 const nextConfig = {
   // Basic configuration
   reactStrictMode: true,
-  swcMinify: true,
   
   // Allow server actions from the browser preview domain during development
   experimental: {

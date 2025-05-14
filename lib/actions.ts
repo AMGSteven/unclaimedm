@@ -2,6 +2,7 @@
 
 import { cookies } from "next/headers"
 import { isValidEmail, isValidPhone } from "./validation"
+import { redirect } from "next/navigation"
 
 // Helper function to safely manage cookies in Next.js 15, which returns a Promise
 async function setCookie(name: string, value: string) {
@@ -53,12 +54,16 @@ export async function submitEmailForm(formData: FormData) {
   const dataPolicy = formData.get("dataPolicy") === "on"
 
   if (!email || !consent || !dataPolicy) {
-    return { error: "All fields are required" }
+    // Instead of returning an error object, we'll throw an error
+    // In a real app, you'd want to display this error to the user
+    console.error("All fields are required");
+    return; // Return without redirecting
   }
 
   // Server-side validation
   if (!isValidEmail(email)) {
-    return { error: "Please enter a valid email address" }
+    console.error("Please enter a valid email address");
+    return; // Return without redirecting
   }
 
   // Store data in cookies
@@ -68,8 +73,8 @@ export async function submitEmailForm(formData: FormData) {
   const searchParams = new URL(formData.get("currentUrl") as string).searchParams
   const queryString = searchParams.toString() ? `?${searchParams.toString()}` : ""
 
-  // Return the redirect URL instead of redirecting directly
-  return { redirect: `/funnel/quiz${queryString}` }
+  // Use Next.js redirect function instead of returning an object
+  redirect(`/funnel/quiz${queryString}`);
 }
 
 export async function submitPhoneForm(formData: FormData) {
@@ -77,12 +82,14 @@ export async function submitPhoneForm(formData: FormData) {
   const tcpaConsent = formData.get("tcpaConsent") === "on"
 
   if (!phone || !tcpaConsent) {
-    return { error: "Phone number and consent are required" }
+    console.error("Phone number and consent are required");
+    return; // Return without redirecting
   }
 
   // Server-side validation
   if (!isValidPhone(phone)) {
-    return { error: "Please enter a valid US phone number" }
+    console.error("Please enter a valid US phone number");
+    return; // Return without redirecting
   }
 
   // Store data in cookies
@@ -92,8 +99,8 @@ export async function submitPhoneForm(formData: FormData) {
   const searchParams = new URL(formData.get("currentUrl") as string).searchParams
   const queryString = searchParams.toString() ? `?${searchParams.toString()}` : ""
 
-  // Return the redirect URL instead of redirecting directly
-  return { redirect: `/funnel/quiz${queryString}` }
+  // Use Next.js redirect function instead of returning an object
+  redirect(`/funnel/quiz${queryString}`);
 }
 
 // Update the submitQuizAnswer function to handle FormData properly:
@@ -102,7 +109,8 @@ export async function submitQuizAnswer(formData: FormData) {
   const answer = formData.get("answer") as string
 
   if (!question || !answer) {
-    return { error: "Question and answer are required" }
+    console.error("Question and answer are required");
+    return; // Return without redirecting
   }
 
   // Store answer in cookies
@@ -116,8 +124,8 @@ export async function submitQuizAnswer(formData: FormData) {
   // Determine next page based on current question
   const nextPage = "/funnel/quiz"
 
-  // Return the redirect URL instead of redirecting directly
-  return { redirect: `${nextPage}${queryString}` }
+  // Use Next.js redirect function instead of returning an object
+  redirect(`${nextPage}${queryString}`);
 }
 
 export async function skipToThankYou(formData: FormData) {
@@ -125,8 +133,8 @@ export async function skipToThankYou(formData: FormData) {
   const searchParams = new URL(formData.get("currentUrl") as string).searchParams
   const queryString = searchParams.toString() ? `?${searchParams.toString()}` : ""
 
-  // Return the redirect URL instead of redirecting directly
-  return { redirect: `/funnel/thank-you${queryString}` }
+  // Use Next.js redirect function instead of returning an object
+  redirect(`/funnel/thank-you${queryString}`);
 }
 
 // Submit first step of lead capture form and send data to compliance engine
@@ -136,7 +144,8 @@ export async function submitStep1(formData: FormData) {
   const certificateUrl = formData.get("xxTrustedFormCertUrl") as string
 
   if (!email || !firstName) {
-    return { error: "All fields are required" }
+    console.error("All fields are required");
+    return; // Return without redirecting
   }
 
   // Store in cookies
@@ -153,7 +162,8 @@ export async function submitStep1(formData: FormData) {
     certificateUrl
   })
 
-  return { redirect: "/lead-capture/step2" }
+  // Use Next.js redirect function instead of returning an object
+  redirect("/lead-capture/step2");
 }
 
 // Submit second step of lead capture form and send complete data to compliance engine
@@ -164,7 +174,8 @@ export async function submitStep2(formData: FormData) {
   const certificateUrl = formData.get("xxTrustedFormCertUrl") as string
 
   if (!zipCode || !state) {
-    return { error: "Zip code and state are required" }
+    console.error("Zip code and state are required");
+    return; // Return without redirecting
   }
 
   // Store in cookies
@@ -190,5 +201,6 @@ export async function submitStep2(formData: FormData) {
     certificateUrl
   })
 
-  return { redirect: "/lead-capture/thank-you" }
+  // Use Next.js redirect function instead of returning an object
+  redirect("/lead-capture/thank-you");
 }
