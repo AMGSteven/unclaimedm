@@ -26,13 +26,18 @@ export default function MonetizableQuestion({ question, questionId, subheadline,
     formData.append("answer", selectedOption || "")
     formData.append("currentUrl", window.location.href)
 
-    const result = await submitQuizAnswer(formData)
-
-    if (result?.redirect) {
-      router.push(result.redirect)
-    } else if (result?.error) {
+    try {
+      // The server action will handle the redirect automatically
+      // If it returns, it means there was an error (but no error was thrown)
+      await submitQuizAnswer(formData)
+      
+      // If we get here, the action didn't redirect, so we should reset the form
       setIsSubmitting(false)
-      alert(result.error)
+    } catch (error) {
+      // Handle any errors that might be thrown
+      console.error("Error submitting answer:", error)
+      setIsSubmitting(false)
+      alert("There was an error submitting your answer. Please try again.")
     }
   }
 

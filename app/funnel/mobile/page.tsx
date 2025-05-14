@@ -55,13 +55,19 @@ export default function MobileCapturePage() {
     setIsSubmitting(true)
     // Add current URL to form data to preserve query parameters
     formData.append("currentUrl", window.location.href)
-    const result = await submitPhoneForm(formData)
-
-    if (result?.redirect) {
-      router.push(result.redirect)
-    } else if (result?.error) {
+    
+    try {
+      // The server action will handle the redirect automatically
+      // If it returns, it means there was an error (but no error was thrown)
+      await submitPhoneForm(formData)
+      
+      // If we get here, the action didn't redirect, so we should reset the form
       setIsSubmitting(false)
-      alert(result.error)
+    } catch (error) {
+      // Handle any errors that might be thrown
+      console.error("Error submitting form:", error)
+      setIsSubmitting(false)
+      alert("There was an error submitting the form. Please try again.")
     }
   }
 
