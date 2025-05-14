@@ -13,10 +13,17 @@ export default function OffersPage() {
   const handleSkip = async (formData: FormData) => {
     setIsSubmitting(true)
     formData.append("currentUrl", window.location.href)
-    const result = await skipToThankYou(formData)
-
-    if (result?.redirect) {
-      router.push(result.redirect)
+    
+    try {
+      // The server action will handle the redirect automatically
+      await skipToThankYou(formData)
+      
+      // If we get here, the action didn't redirect, so we should reset the form
+      setIsSubmitting(false)
+    } catch (error) {
+      // Handle any errors that might be thrown
+      console.error("Error skipping to thank you page:", error)
+      setIsSubmitting(false)
     }
   }
 
