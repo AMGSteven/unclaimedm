@@ -116,16 +116,10 @@ export async function submitQuizAnswer(formData: FormData) {
   // Store answer in cookies
   await setCookie(`quiz_${question}`, answer)
 
-  // Get query parameters to preserve them
-  const currentUrl = formData.get("currentUrl") as string
-  const searchParams = new URL(currentUrl).searchParams
-  const queryString = searchParams.toString() ? `?${searchParams.toString()}` : ""
-
-  // Determine next page based on current question
-  const nextPage = "/funnel/quiz"
-
-  // Use Next.js redirect function instead of returning an object
-  redirect(`${nextPage}${queryString}`);
+  // Don't redirect - let the client-side component handle the flow progression
+  // The client is already managing the step transitions
+  console.log(`Stored answer for question ${question}: ${answer}`);
+  return;
 }
 
 export async function skipToThankYou(formData: FormData) {
