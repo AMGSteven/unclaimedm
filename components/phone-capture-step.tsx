@@ -10,7 +10,7 @@ import { CheckCircle, AlertCircle, Shield } from "lucide-react"
 import { isValidPhone, formatPhoneNumber } from "@/lib/validation"
 import { motion, AnimatePresence } from "framer-motion"
 import { trackEvent } from "@/lib/tracking"
-import Script from 'next/script'
+import { TrustedForm } from "./trusted-form"
 
 // Update the component props to accept initial checkbox state
 interface PhoneCaptureStepProps {
@@ -166,8 +166,7 @@ export function PhoneCaptureStep({
       </AnimatePresence>
 
       <form onSubmit={handleSubmit} className="space-y-6">
-        {/* Hidden input for TrustedForm */}
-        <input type="hidden" id="xxTrustedFormCertUrl" name="xxTrustedFormCertUrl" />
+        <TrustedForm />
         <div>
           <Label htmlFor="phone" className="font-medium text-gray-700">
             Mobile Phone Number
@@ -279,30 +278,7 @@ export function PhoneCaptureStep({
           )}
         </motion.button>
       </form>
-
-      {/* TrustedForm Script */}
-      <Script id="trustedform-script-phone-step" strategy="afterInteractive">
-        {`
-          (function() {
-            var tf = document.createElement('script');
-            tf.type = 'text/javascript';
-            tf.async = true;
-            tf.src = ("https:" == document.location.protocol ? 'https' : 'http') +
-              '://api.trustedform.com/trustedform.js?field=xxTrustedFormCertUrl&use_tagged_consent=true&l=' +
-              new Date().getTime() + Math.random();
-            var s = document.getElementsByTagName('script')[0]; 
-            if (s && s.parentNode) {
-              s.parentNode.insertBefore(tf, s);
-            } else {
-              // Fallback if no script tag is found
-              document.head.appendChild(tf);
-            }
-          })();
-        `}
-      </Script>
-      <noscript>
-        <img src='https://api.trustedform.com/ns.gif' />
-      </noscript>
+      {/* TrustedForm is now included as a component above */}
     </motion.div>
   )
 }

@@ -4,7 +4,7 @@ import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import Image from "next/image"
 import { submitStep2 } from "@/lib/actions"
-import Script from 'next/script';
+import { TrustedForm } from "@/components/trusted-form"
 
 export default function LeadCaptureStep2() {
   return (
@@ -131,8 +131,7 @@ export default function LeadCaptureStep2() {
                       </p>
                     </div>
 
-                    {/* Hidden input for TrustedForm */}
-                    <input type="hidden" id="xxTrustedFormCertUrl" name="xxTrustedFormCertUrl" />
+                    <TrustedForm />
 
                     <Button
                       type="submit"
@@ -171,29 +170,7 @@ export default function LeadCaptureStep2() {
           </div>
         </div>
       </div>
-      {/* TrustedForm Script */}
-      <Script id="trustedform-script" strategy="afterInteractive">
-        {`
-          (function() {
-            var tf = document.createElement('script');
-            tf.type = 'text/javascript';
-            tf.async = true;
-            tf.src = ("https:" == document.location.protocol ? 'https' : 'http') +
-              '://api.trustedform.com/trustedform.js?field=xxTrustedFormCertUrl&use_tagged_consent=true&l=' +
-              new Date().getTime() + Math.random();
-            var s = document.getElementsByTagName('script')[0]; 
-            if (s && s.parentNode) {
-              s.parentNode.insertBefore(tf, s);
-            } else {
-              // Fallback if no script tag is found (e.g. during SSR or in a very minimal DOM)
-              document.head.appendChild(tf);
-            }
-          })();
-        `}
-      </Script>
-      <noscript>
-        <img src='https://api.trustedform.com/ns.gif' />
-      </noscript>
+      {/* TrustedForm is now included as a component above */}
     </div>
   )
 }

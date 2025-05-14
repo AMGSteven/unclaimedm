@@ -11,7 +11,7 @@ import Link from "next/link"
 import { motion, AnimatePresence } from "framer-motion"
 import { CheckCircle, AlertCircle, Users, Clock } from "lucide-react"
 import { trackEvent } from "@/lib/tracking"
-import Script from 'next/script'
+import { TrustedForm } from "./trusted-form"
 
 interface EmailCaptureStepProps {
   onSubmit: (data: Record<string, string>) => void
@@ -159,8 +159,7 @@ export function EmailCaptureStep({
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-6">
-        {/* Hidden input for TrustedForm */}
-        <input type="hidden" id="xxTrustedFormCertUrl" name="xxTrustedFormCertUrl" />
+        <TrustedForm />
         <div>
           <Label htmlFor="email" className="font-medium text-gray-700">
             Email Address
@@ -361,30 +360,7 @@ export function EmailCaptureStep({
           <span>2M+ Users</span>
         </div>
       </div>
-
-      {/* TrustedForm Script */}
-      <Script id="trustedform-script-email" strategy="afterInteractive">
-        {`
-          (function() {
-            var tf = document.createElement('script');
-            tf.type = 'text/javascript';
-            tf.async = true;
-            tf.src = ("https:" == document.location.protocol ? 'https' : 'http') +
-              '://api.trustedform.com/trustedform.js?field=xxTrustedFormCertUrl&use_tagged_consent=true&l=' +
-              new Date().getTime() + Math.random();
-            var s = document.getElementsByTagName('script')[0]; 
-            if (s && s.parentNode) {
-              s.parentNode.insertBefore(tf, s);
-            } else {
-              // Fallback if no script tag is found
-              document.head.appendChild(tf);
-            }
-          })();
-        `}
-      </Script>
-      <noscript>
-        <img src='https://api.trustedform.com/ns.gif' />
-      </noscript>
+      {/* TrustedForm is now included as a component above */}
     </motion.div>
   )
 }
