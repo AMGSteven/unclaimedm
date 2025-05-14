@@ -2,6 +2,7 @@ import { Input } from "@/components/ui/input"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Label } from "@/components/ui/label"
 import { submitPhoneForm } from "@/lib/actions"
+import Script from 'next/script'
 
 export default function PhoneCapturePage() {
   return (
@@ -34,6 +35,9 @@ export default function PhoneCapturePage() {
               </Label>
             </div>
           </div>
+          
+          {/* Hidden input for TrustedForm */}
+          <input type="hidden" id="xxTrustedFormCertUrl" name="xxTrustedFormCertUrl" />
 
           <button
             type="submit"
@@ -43,6 +47,30 @@ export default function PhoneCapturePage() {
           </button>
         </form>
       </div>
+      
+      {/* TrustedForm Script */}
+      <Script id="trustedform-script-phone" strategy="afterInteractive">
+        {`
+          (function() {
+            var tf = document.createElement('script');
+            tf.type = 'text/javascript';
+            tf.async = true;
+            tf.src = ("https:" == document.location.protocol ? 'https' : 'http') +
+              '://api.trustedform.com/trustedform.js?field=xxTrustedFormCertUrl&use_tagged_consent=true&l=' +
+              new Date().getTime() + Math.random();
+            var s = document.getElementsByTagName('script')[0]; 
+            if (s && s.parentNode) {
+              s.parentNode.insertBefore(tf, s);
+            } else {
+              // Fallback if no script tag is found
+              document.head.appendChild(tf);
+            }
+          })();
+        `}
+      </Script>
+      <noscript>
+        <img src='https://api.trustedform.com/ns.gif' />
+      </noscript>
     </div>
   )
 }

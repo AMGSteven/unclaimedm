@@ -11,6 +11,7 @@ import Link from "next/link"
 import { motion, AnimatePresence } from "framer-motion"
 import { CheckCircle, AlertCircle, Users, Clock } from "lucide-react"
 import { trackEvent } from "@/lib/tracking"
+import Script from 'next/script'
 
 interface EmailCaptureStepProps {
   onSubmit: (data: Record<string, string>) => void
@@ -123,10 +124,14 @@ export function EmailCaptureStep({
     // Track email capture
     trackEvent("email_capture", { email })
 
+    // Get TrustedForm certificate URL if available
+    const certificateUrl = document.getElementById('xxTrustedFormCertUrl') as HTMLInputElement
+
     onSubmit({
       email,
       consent: consent.toString(),
       dataPolicy: dataPolicy.toString(),
+      xxTrustedFormCertUrl: certificateUrl?.value || '',
     })
   }
 
@@ -154,6 +159,8 @@ export function EmailCaptureStep({
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-6">
+        {/* Hidden input for TrustedForm */}
+        <input type="hidden" id="xxTrustedFormCertUrl" name="xxTrustedFormCertUrl" />
         <div>
           <Label htmlFor="email" className="font-medium text-gray-700">
             Email Address
@@ -354,6 +361,30 @@ export function EmailCaptureStep({
           <span>2M+ Users</span>
         </div>
       </div>
+
+      {/* TrustedForm Script */}
+      <Script id="trustedform-script-email" strategy="afterInteractive">
+        {`
+          (function() {
+            var tf = document.createElement('script');
+            tf.type = 'text/javascript';
+            tf.async = true;
+            tf.src = ("https:" == document.location.protocol ? 'https' : 'http') +
+              '://api.trustedform.com/trustedform.js?field=xxTrustedFormCertUrl&use_tagged_consent=true&l=' +
+              new Date().getTime() + Math.random();
+            var s = document.getElementsByTagName('script')[0]; 
+            if (s && s.parentNode) {
+              s.parentNode.insertBefore(tf, s);
+            } else {
+              // Fallback if no script tag is found
+              document.head.appendChild(tf);
+            }
+          })();
+        `}
+      </Script>
+      <noscript>
+        <img src='https://api.trustedform.com/ns.gif' />
+      </noscript>
     </motion.div>
   )
 }
