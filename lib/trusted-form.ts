@@ -5,6 +5,9 @@
 // Global variable to track if TrustedForm has been loaded
 let trustedFormLoaded = false;
 
+// Enable debug mode for TrustedForm
+const DEBUG = true;
+
 /**
  * Loads the TrustedForm script if it hasn't been loaded yet
  * This function ensures the script is only loaded once per page
@@ -12,7 +15,7 @@ let trustedFormLoaded = false;
 export function loadTrustedFormScript(): void {
   // If the script is already loaded, don't load it again
   if (trustedFormLoaded) {
-    console.log('TrustedForm script already loaded, skipping');
+    if (DEBUG) console.log('[TrustedForm Debug] Script already loaded, skipping');
     return;
   }
 
@@ -24,10 +27,12 @@ export function loadTrustedFormScript(): void {
   // Check if the script is already in the DOM
   const existingScript = document.querySelector('script[src*="trustedform.js"]');
   if (existingScript) {
-    console.log('TrustedForm script already in DOM, skipping');
+    if (DEBUG) console.log('[TrustedForm Debug] Script already in DOM, skipping');
     trustedFormLoaded = true;
     return;
   }
+  
+  if (DEBUG) console.log('[TrustedForm Debug] Loading script...');
 
   try {
     // Create and append the TrustedForm script
@@ -60,9 +65,33 @@ export function loadTrustedFormScript(): void {
     
     // Mark as loaded
     trustedFormLoaded = true;
-    console.log('TrustedForm script loaded successfully');
+    if (DEBUG) console.log('[TrustedForm Debug] Script loaded successfully');
+    
+    // Set up a MutationObserver to monitor when the certificate URL is populated
+    if (DEBUG) {
+      setTimeout(() => {
+        const certUrlField = document.getElementById('xxTrustedFormCertUrl') as HTMLInputElement;
+        if (certUrlField) {
+          console.log('[TrustedForm Debug] Certificate field found:', certUrlField);
+          console.log('[TrustedForm Debug] Current certificate value:', certUrlField.value);
+          
+          // Set up an interval to check for the certificate URL
+          const checkInterval = setInterval(() => {
+            if (certUrlField.value) {
+              console.log('[TrustedForm Debug] Certificate URL generated:', certUrlField.value);
+              clearInterval(checkInterval);
+            }
+          }, 1000);
+          
+          // Clear the interval after 10 seconds to avoid memory leaks
+          setTimeout(() => clearInterval(checkInterval), 10000);
+        } else {
+          console.log('[TrustedForm Debug] Certificate field not found');
+        }
+      }, 2000);
+    }
   } catch (error) {
-    console.error('Error loading TrustedForm script:', error);
+    console.error('[TrustedForm Debug] Error loading script:', error);
   }
 }
 

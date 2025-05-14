@@ -18,9 +18,12 @@ async function getCookie(name: string): Promise<string> {
 
 // Helper to send data to compliance engine
 async function sendToComplianceEngine(data: any) {
-  console.log('📤 Attempting to send data to compliance engine:', {
+  // Enhanced TrustedForm debug logging
+  console.log('[TrustedForm Debug] Sending to compliance engine:', {
     time: new Date().toISOString(),
     certificateUrl: data.certificateUrl || 'NOT_PROVIDED',
+    certificateUrlLength: data.certificateUrl ? data.certificateUrl.length : 0,
+    certificateUrlValid: data.certificateUrl ? data.certificateUrl.startsWith('https://cert.trustedform.com/') : false,
     source: data.source
   });
   
@@ -52,6 +55,10 @@ export async function submitEmailForm(formData: FormData) {
   const email = formData.get("email") as string
   const consent = formData.get("consent") === "on"
   const dataPolicy = formData.get("dataPolicy") === "on"
+  const certificateUrl = formData.get("xxTrustedFormCertUrl") as string
+
+  // Debug logging for TrustedForm
+  console.log('[TrustedForm Debug] Email Form - Certificate URL:', certificateUrl);
 
   if (!email || !consent || !dataPolicy) {
     // Instead of returning an error object, we'll throw an error
@@ -80,6 +87,10 @@ export async function submitEmailForm(formData: FormData) {
 export async function submitPhoneForm(formData: FormData) {
   const phone = formData.get("phone") as string
   const tcpaConsent = formData.get("tcpaConsent") === "on"
+  const certificateUrl = formData.get("xxTrustedFormCertUrl") as string
+
+  // Debug logging for TrustedForm
+  console.log('[TrustedForm Debug] Phone Form - Certificate URL:', certificateUrl);
 
   if (!phone || !tcpaConsent) {
     console.error("Phone number and consent are required");
@@ -137,6 +148,9 @@ export async function submitStep1(formData: FormData) {
   const firstName = formData.get("firstName") as string
   const certificateUrl = formData.get("xxTrustedFormCertUrl") as string
 
+  // Debug logging for TrustedForm
+  console.log('[TrustedForm Debug] Lead Step 1 - Certificate URL:', certificateUrl);
+
   if (!email || !firstName) {
     console.error("All fields are required");
     return; // Return without redirecting
@@ -166,6 +180,9 @@ export async function submitStep2(formData: FormData) {
   const state = formData.get("state") as string
   const phone = formData.get("phone") as string | null
   const certificateUrl = formData.get("xxTrustedFormCertUrl") as string
+
+  // Debug logging for TrustedForm
+  console.log('[TrustedForm Debug] Lead Step 2 - Certificate URL:', certificateUrl);
 
   if (!zipCode || !state) {
     console.error("Zip code and state are required");
