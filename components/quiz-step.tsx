@@ -24,7 +24,7 @@ interface QuizStepProps {
   options: QuizOption[]
   onSubmit: (answer: string) => void
   isLoading: boolean
-  initialAnswer?: string // Add this prop
+  initialAnswer?: string | null // Allow null as a valid type
 }
 
 export function QuizStep({
@@ -35,7 +35,7 @@ export function QuizStep({
   options,
   onSubmit,
   isLoading,
-  initialAnswer = null, // Use initialAnswer with default null
+  initialAnswer = null, // Default to null
 }: QuizStepProps) {
   const [selectedOption, setSelectedOption] = useState<string | null>(initialAnswer)
   // If there's an initial answer, we should show the validation message
